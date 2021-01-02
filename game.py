@@ -12,6 +12,8 @@ def compare(card1, card2, length):
         if length == 2:
             if card2[0] == 'J':
                 return 20
+            elif card1[0] == 'J' and card2[0] != 'J':
+                return 0
             return 10
         return 0
     else:
@@ -52,17 +54,18 @@ class Game:
         self.deal_cards()
 
     def deal_cards(self):
-        for i in range(4):
-            x = random.randint(0, len(self.leftCards) - 1)
-            self.p1cards.append(self.leftCards[x])
-            del self.leftCards[x]
+        if len(self.p1cards) == 0 and len(self.p2cards) == 0:
+            for i in range(4):
+                x = random.randint(0, len(self.leftCards) - 1)
+                self.p1cards.append(self.leftCards[x])
+                del self.leftCards[x]
 
-            x = random.randint(0, len(self.leftCards) - 1)
-            self.p2cards.append(self.leftCards[x])
-            del self.leftCards[x]
-        self.p1cards1 = self.p1cards.copy()
-        self.p2cards1 = self.p2cards.copy()
-        self.dealt = True
+                x = random.randint(0, len(self.leftCards) - 1)
+                self.p2cards.append(self.leftCards[x])
+                del self.leftCards[x]
+            self.p1cards1 = self.p1cards.copy()
+            self.p2cards1 = self.p2cards.copy()
+            self.dealt = True
 
     def card_played(self, p, card):
 

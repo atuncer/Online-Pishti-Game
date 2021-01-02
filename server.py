@@ -39,7 +39,7 @@ def threaded_client(conn, p, gameId):
                 else:
                     if data == 'dealfirst':
                         game.deal_cards_first()
-                    elif data == 'deal':
+                    elif data == 'deal' and p == 1:
                         game.deal_cards()
                     elif len(data) == 2:
                         game.card_played(p, data)

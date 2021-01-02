@@ -9,6 +9,7 @@ win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
 time = None
 done = False
+flag = False
 
 
 class Button:
@@ -172,6 +173,7 @@ btns = [Button('0', 0, 500, (128, 128, 128)), Button("0", 200, 500, (128, 128, 1
 
 
 def main():
+    global flag
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -199,6 +201,7 @@ def main():
             if len(game.leftCards) > 0:
                 n.send('deal')
 
+
         elif game.p1cards == [] and game.p2cards == []:  # ilk turda dağıtmak için
             n.send('dealfirst')
 
@@ -218,6 +221,7 @@ def main():
                 pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 pos = pygame.mouse.get_pos()
                 for i in range(len(btns)):
                     if btns[i].click(pos) and game.connected():
@@ -228,8 +232,9 @@ def main():
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
-                                    print(game.middleCards)
-                                    print(game.p1Deadcards)
+                                    print(game.p1cards)
+                                    print(game.p2cards)
+
 
 
                         else:
@@ -239,8 +244,10 @@ def main():
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
-                                    print(game.middleCards)
-                                    print(game.p2Deadcards)
+                                    print(game.p1cards)
+                                    print(game.p2cards)
+
+
 
         redrawWindow(win, game, player)
 
