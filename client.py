@@ -55,7 +55,7 @@ def redrawWindow(win, game, p):
                 btns[i].height = 264
             btns[i].draw(win)
 
-        font = pygame.font.SysFont("comicsans", 20)
+        font = pygame.font.SysFont("comicsans", 70)
 
         if game.p1Turn and p == 0:
             text1 = font.render("Your Turn", 1, (0, 0, 0))
@@ -65,13 +65,16 @@ def redrawWindow(win, game, p):
             text1 = font.render("Waiting...", 1, (0, 0, 0))
 
         if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 0:
-            text1 = font.render(str(game.calculator1()), 1, (0, 0, 0))
+
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (0, 0, 0)), (450, 700))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (0, 0, 0)), (450, 100))
+
             if game.calculator2() < game.calculator1():
                 win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (0, 0, 0)), (450, 400))
             elif game.calculator1() == game.calculator2():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0)), (650, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0)), (450, 400))
             else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0)), (250, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0)), (450, 400))
 
         if game.p2Turn and p == 1:
             text2 = font.render("Your Turn", 1, (0, 0, 0))
@@ -81,18 +84,21 @@ def redrawWindow(win, game, p):
             text2 = font.render("Waiting...", 1, (0, 0, 0))
 
         if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 1:
-            text2 = font.render(str(game.calculator2()), 1, (0, 0, 0))
+
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (0, 0, 0)), (450, 100))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (0, 0, 0)), (450, 700))
+
             if game.calculator2() > game.calculator1():
                 win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (0, 0, 0)), (450, 400))
             elif game.calculator2() == game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0)), (650, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0)), (450, 400))
             else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0)), (250, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0)), (450, 400))
 
         if p == 1:
-            win.blit(text2, (400, 400))
+            win.blit(text2, (900, 680))
         else:
-            win.blit(text1, (400, 400))
+            win.blit(text1, (900, 680))
 
         font2 = pygame.font.SysFont("comicsans", 60)
         if len(game.middleCards) > 0:
@@ -140,7 +146,7 @@ def redrawWindow(win, game, p):
                     #midcard = font2.render(game.pishticard, 1, (0, 0, 0))
                     card4 = pygame.image.load(r'JPEG/' + game.pishticard + '.png')
                     win.blit(card4, (1000, 30))
-                win.blit(pygame.image.load('JPEG/pishti.png'),(400,300))
+                win.blit(pygame.image.load('JPEG/pishti.png'),(400,320))
 
         if p == 0 and len(game.p1cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
