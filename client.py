@@ -134,11 +134,13 @@ def redrawWindow(win, game, p):
                         mixer.music.play()
                         while pygame.mixer.music.get_busy():
                             pygame.time.Clock().tick(10)
+
                         time = None
 
                     #midcard = font2.render(game.pishticard, 1, (0, 0, 0))
                     card4 = pygame.image.load(r'JPEG/' + game.pishticard + '.png')
                     win.blit(card4, (1000, 30))
+                win.blit(pygame.image.load('JPEG/pishti.png'),(400,300))
 
         if p == 0 and len(game.p1cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
@@ -282,4 +284,3 @@ def menu_screen():
 
 while True:
     menu_screen()
-
