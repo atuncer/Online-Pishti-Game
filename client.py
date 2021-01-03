@@ -245,11 +245,9 @@ def main():
                                     print(game.p1cards)
                                     print(game.p2cards)
 
-
-
                         else:
                             if game.p2Turn:
-                                n.send(btns[i].text) #8c
+                                n.send(btns[i].text)
                                 print(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
