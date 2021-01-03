@@ -11,7 +11,7 @@ pygame.display.set_caption("Client")
 time = None
 done = False
 flag = False
-
+networkDown = False
 
 class Button:
     def __init__(self, text, x, y, color):
@@ -41,8 +41,7 @@ class Button:
 def redrawWindow(win, game, p):
     mixer.init()
     mixer.music.load("JPEG/pishti.mp3")
-    global done
-    global time
+    global done, networkDown, time
     win.fill((7,99,36))
 
     if not (game.connected()):
@@ -123,24 +122,25 @@ def redrawWindow(win, game, p):
             if time is None and done is False: # sadece 1 kere giriyor
                 time = pygame.time.get_ticks()
                 done = True
-                mixer.init()
-                mixer.music.load("JPEG/pishti.mp3")
-                mixer.music.play()
-                while pygame.mixer.music.get_busy():
-                    pygame.time.Clock().tick(10)
+
                 #midcard = font2.render("", 1, (0, 0, 0))
 
             elif time is not None and done is True:
                 tm = pygame.time.get_ticks() - time
                 if tm < 1000:
                     if tm >= 620:
+                        mixer.init()
+                        mixer.music.load("JPEG/pishti.mp3")
+                        mixer.music.play()
+                        while pygame.mixer.music.get_busy():
+                            pygame.time.Clock().tick(10)
                         time = None
 
                     #midcard = font2.render(game.pishticard, 1, (0, 0, 0))
                     card4 = pygame.image.load(r'JPEG/' + game.pishticard + '.png')
                     win.blit(card4, (1000, 30))
 
-        if p == 0:
+        if p == 0 and len(game.p1cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p1cards1[1] + '.png') if game.p1cards1[1] != 'x' else 'empty'
             card3 = pygame.image.load(r'JPEG/' + game.p1cards1[2] + '.png') if game.p1cards1[2] != 'x' else 'empty'
@@ -156,7 +156,7 @@ def redrawWindow(win, game, p):
                     i = len(game.p2cards) - 4
                 win.blit(pygame.image.load(r'JPEG/Red_back.png'), (200 * i+30, 30))
 
-        elif p == 1:
+        elif p == 1 and len(game.p1cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p2cards1[0] + '.png') if game.p2cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p2cards1[1] + '.png') if game.p2cards1[1] != 'x' else 'empty'
             card3 = pygame.image.load(r'JPEG/' + game.p2cards1[2] + '.png') if game.p2cards1[2] != 'x' else 'empty'
@@ -172,7 +172,8 @@ def redrawWindow(win, game, p):
                     i = len(game.p2cards) - 4
                 win.blit(pygame.image.load(r'JPEG/Red_back.png'), (200 * i+30, 30))
 
-        #win.blit(midcard, (200, 200))
+        else:
+            networkDown = True
 
     pygame.display.update()
 
@@ -182,7 +183,8 @@ btns = [Button('0', 30, 500, (7,99,36)), Button("0", 230, 500, (7,99,36)),
 
 
 def main():
-    global flag
+
+    global flag,networkDown
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -193,7 +195,6 @@ def main():
         clock.tick(60)
         try:
             game = n.send("get")
-
         except:
             run = False
             print("Couldn't get game")
@@ -222,6 +223,9 @@ def main():
                 elif player == 1:
                     btns[i].height = 100
                     btns[i].text = game.p2cards[i]
+
+        if networkDown:
+            n.send('reset')
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -255,8 +259,6 @@ def main():
                                     print(game.p1cards)
                                     print(game.p2cards)
 
-
-
         redrawWindow(win, game, player)
 
 
@@ -284,3 +286,4 @@ def menu_screen():
 
 while True:
     menu_screen()
+
