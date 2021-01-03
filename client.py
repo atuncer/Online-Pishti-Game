@@ -224,8 +224,6 @@ def main():
                     btns[i].height = 100
                     btns[i].text = game.p2cards[i]
 
-        if networkDown:
-            n.send('reset')
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
