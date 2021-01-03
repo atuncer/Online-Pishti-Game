@@ -156,7 +156,7 @@ def redrawWindow(win, game, p):
                     i = len(game.p2cards) - 4
                 win.blit(pygame.image.load(r'JPEG/Red_back.png'), (200 * i+30, 30))
 
-        elif p == 1 and len(game.p1cards) != 0:
+        elif p == 1 and len(game.p2cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p2cards1[0] + '.png') if game.p2cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p2cards1[1] + '.png') if game.p2cards1[1] != 'x' else 'empty'
             card3 = pygame.image.load(r'JPEG/' + game.p2cards1[2] + '.png') if game.p2cards1[2] != 'x' else 'empty'
