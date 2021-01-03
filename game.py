@@ -1,6 +1,5 @@
 import random
 
-
 # kupa  a
 # karo  b
 # maça  c
@@ -101,6 +100,7 @@ class Game:
     def connected(self):
         return self.ready
 
+
     def calculator1(self):
         for x in self.p1Deadcards:
             if x == '2d':
@@ -112,6 +112,7 @@ class Game:
         if len(self.p1Deadcards) > len(self.p2Deadcards):
             self.p1Points += 3
         return self.p1Points
+
 
     def calculator2(self):
         for x in self.p2Deadcards:

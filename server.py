@@ -26,7 +26,6 @@ def threaded_client(conn, p, gameId):
     conn.send(str.encode(str(p)))
 
     reply = ""
-    #data = 8c
     while True:
         try:
             data = conn.recv(4096).decode()
