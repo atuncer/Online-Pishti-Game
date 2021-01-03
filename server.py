@@ -59,7 +59,6 @@ def threaded_client(conn, p, gameId):
     conn.close()
 
 
-
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
