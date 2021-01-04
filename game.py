@@ -23,7 +23,6 @@ class Game:
     def __init__(self, id):
         self.ready = False
         self.id = id
-        # pişti
         self.isFirstRound = True
         self.p1Points = 0
         self.p2Points = 0
