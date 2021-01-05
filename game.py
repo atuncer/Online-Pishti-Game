@@ -1,4 +1,5 @@
 import random
+import sqlite3
 
 # kupa  a
 # karo  b
@@ -174,3 +175,13 @@ class Game:
 
     def getwinner(self):
         return self.calculator1() > self.calculator2()
+
+    def gethighscores(self):
+        sqlconn = sqlite3.connect('db1.db')
+        c = sqlconn.cursor()
+
+        c.execute("SELECT * FROM USERS ORDER BY points DESC")
+
+        arr = c.fetchall()
+
+        return arr[:min(5, len(arr))]

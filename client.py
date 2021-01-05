@@ -98,45 +98,48 @@ def redrawWindow(win, game, p):
                 win.blit(pygame.font.SysFont("comicsans", 40).render(p0name + " wants to rematch", 1, (255, 255, 255)),
                          (830, 680))
 
-        if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 0:
+        if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0:
+            if p == 0:
+                win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (255, 255, 255)),
+                         (450, 700))
+                win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (255, 255, 255)),
+                         (450, 100))
 
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (255, 255, 255)),
-                     (450, 700))
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (255, 255, 255)),
-                     (450, 100))
+                if game.calculator2() < game.calculator1():
+                    win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
+                             (350, 400))
+                elif game.calculator1() == game.calculator2():
+                    win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
+                             (430, 400))
+                else:
+                    win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
+                             (350, 400))
+            elif p == 1:
 
-            if game.calculator2() < game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
-                         (350, 400))
-            elif game.calculator1() == game.calculator2():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
-                         (430, 400))
-            else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
-                         (350, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (255, 255, 255)),
+                         (450, 100))
+                win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), True, (255, 255, 255)),
+                         (450, 700))
+
+                if game.calculator2() > game.calculator1():
+                    win.blit(
+                        pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
+                        (350, 400))
+                elif game.calculator2() == game.calculator1():
+                    win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
+                             (430, 400))
+                else:
+                    win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
+                             (350, 400))
 
             btns[-1].text = 'rematch'
             btns[-1].clickable = True
 
-        elif (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 1:
+            h_scores = game.gethighscores()
 
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (255, 255, 255)),
-                     (450, 100))
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), True, (255, 255, 255)),
-                     (450, 700))
-
-            if game.calculator2() > game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
-                         (350, 400))
-            elif game.calculator2() == game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
-                         (430, 400))
-            else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
-                         (350, 400))
-
-            btns[-1].clickable = True
-            btns[-1].text = 'rematch'
+            for i in range (len(h_scores)):
+                hs = str(h_scores[i]).split(',')
+                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[0][2:-1] + hs[1][:-1], True, (255, 255, 255)), (920, 100+i*50))
 
         elif p == 1:
             win.blit(text2, (900, 680))
