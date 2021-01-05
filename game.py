@@ -171,3 +171,6 @@ class Game:
 
     def getrematchwanters(self):
         return self.p1rematch, self.p2rematch
+
+    def getwinner(self):
+        return self.calculator1() > self.calculator2()

@@ -63,13 +63,13 @@ def redrawWindow(win, game, p):
         font = pygame.font.SysFont("comicsans", 70)
 
         if p == 0:
-            win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 330))
-            win.blit(pygame.font.SysFont("comicsans", 50).render("Vs.", 1, (255, 255, 255)), (30, 380))
-            win.blit(pygame.font.SysFont("comicsans", 50).render(p1name, 1, (255, 255, 255)), (30, 430))
-        else:
             win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 430))
             win.blit(pygame.font.SysFont("comicsans", 50).render("Vs.", 1, (255, 255, 255)), (30, 380))
             win.blit(pygame.font.SysFont("comicsans", 50).render(p1name, 1, (255, 255, 255)), (30, 330))
+        else:
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 330))
+            win.blit(pygame.font.SysFont("comicsans", 50).render("Vs.", 1, (255, 255, 255)), (30, 380))
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p1name, 1, (255, 255, 255)), (30, 430))
 
         if game.p1Turn and p == 0:
             text1 = font.render("Your Turn", 1, (255, 255, 255))
@@ -360,3 +360,4 @@ def menu_screen():
 
 while True:
     menu_screen()
+

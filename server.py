@@ -1,6 +1,7 @@
 import socket
 from _thread import *
 import pickle
+import sqlite3
 from game import Game
 
 server = "localhost"
@@ -22,6 +23,10 @@ idCount = 0
 
 
 def threaded_client(conn, p, gameId):
+    flag = True
+    p0rematch = False
+    p1rematch = False
+    isfirstround = True
     global idCount
     conn.send(str.encode(str(p)))
 
@@ -36,7 +41,30 @@ def threaded_client(conn, p, gameId):
                 if not data:
                     break
                 else:
+                    if (len(game.p1cards) + len(game.p2cards) + len(game.leftCards) == 0) and flag and not isfirstround:
+                        flag = False
+                        try:
+                            sqlconn = sqlite3.connect('db1.db')
+                            c = sqlconn.cursor()
+
+
+                            c.execute("SELECT COUNT(*) FROM USERS WHERE username = '{usr}'".format(usr=game.p1username if game.getwinner() else game.p2username))
+                            if str(c.fetchone())[1] != '1':
+                                c.execute(
+                                    "INSERT INTO USERS (username,points) VALUES ('{usr}','{score}')".format(score="1", usr= game.p1username if game.getwinner() else game.p2username))
+                            else:
+                                c.execute(
+                                    "UPDATE USERS SET points = points + {score} WHERE username = '{usr}'".format(score="1", usr=game.p1username if game.getwinner() else game.p2username))
+
+
+                            sqlconn.commit()
+                            sqlconn.close()
+                        except sqlite3.Error as e:
+                            print("An error occurred:", e.args[0])
+
+
                     if data == 'dealfirst':
+                        isfirstround = False
                         game.deal_cards_first()
                     elif data == 'deal' and p == 1:
                         game.deal_cards()
@@ -45,7 +73,15 @@ def threaded_client(conn, p, gameId):
                     elif data.split(',')[0] == 'username':
                         game.setUserName(p, data.split(',')[1])
                     elif data == 'rematch':
+                        if p == 0: p0rematch = True
+                        else: p1rematch = True
+
                         game.rematch(p)
+
+                        if p0rematch and p1rematch:
+                            flag = True
+                            isfirstround = True
+
                     conn.sendall(pickle.dumps(game))
 
             else:
