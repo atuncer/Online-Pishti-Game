@@ -41,6 +41,8 @@ class Game:
         self.middleCards = []
         self.pishticard = ''
         self.dealt = False  # deal() sonunda true, card_played() sonunda false oluyor
+        self.p1username = ''
+        self.p2username = ''
 
     def deal_cards_first(self):
         for i in range(4):
@@ -124,3 +126,13 @@ class Game:
         if len(self.p2Deadcards) > len(self.p1Deadcards):
             self.p2Points += 3
         return self.p2Points
+
+    def setUserName(self, p, name):
+        if p == 0:
+            self.p1username = name
+        elif p == 1:
+            self.p2username = name
+
+
+    def getUserNames(self):
+        return self.p1username, self.p2username

@@ -42,6 +42,8 @@ def threaded_client(conn, p, gameId):
                         game.deal_cards()
                     elif len(data) == 2:
                         game.card_played(p, data)
+                    elif data.split(',')[0] == 'username':
+                        game.setUserName(p, data.split(',')[1])
                     conn.sendall(pickle.dumps(game))
 
             else:

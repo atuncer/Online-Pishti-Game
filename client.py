@@ -11,7 +11,6 @@ pygame.display.set_caption("Client")
 time = None
 done = False
 flag = False
-networkDown = False
 
 
 class Button:
@@ -43,7 +42,7 @@ class Button:
 def redrawWindow(win, game, p):
     mixer.init()
     mixer.music.load("JPEG/pishti.mp3")
-    global done, networkDown, time
+    global done, time
     win.fill((7, 99, 36))
 
     if not (game.connected()):
@@ -57,7 +56,15 @@ def redrawWindow(win, game, p):
                 btns[i].height = 264
             btns[i].draw(win)
 
+        p0name, p1name = game.getUserNames()
         font = pygame.font.SysFont("comicsans", 70)
+
+        if p == 0:
+            win.blit(pygame.font.SysFont("comicsans", 40).render(p0name, 1, (0, 0, 0)), (450, 780))
+            win.blit(pygame.font.SysFont("comicsans", 40).render(p1name, 1, (0, 0, 0)), (450, 0))
+        else:
+            win.blit(pygame.font.SysFont("comicsans", 40).render(p0name, 1, (0, 0, 0)), (450, 0))
+            win.blit(pygame.font.SysFont("comicsans", 40).render(p1name, 1, (0, 0, 0)), (450, 780))
 
         if game.p1Turn and p == 0:
             text1 = font.render("Your Turn", 1, (0, 0, 0))
@@ -84,8 +91,8 @@ def redrawWindow(win, game, p):
 
         elif (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 1:
 
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (0, 0, 0)), (450, 100))
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (0, 0, 0)), (450, 700))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (0, 0, 0)), (450, 100))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), True, (0, 0, 0)), (450, 700))
 
             if game.calculator2() > game.calculator1():
                 win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (0, 0, 0), (255, 255, 255)),
@@ -143,7 +150,7 @@ def redrawWindow(win, game, p):
                     win.blit(card4, (1000, 30))
                 win.blit(pygame.image.load('JPEG/pishti.png'), (400, 320))
 
-        if p == 0 and len(game.p1cards) != 0:
+        if p == 0 and len(game.p1cards) + len(game.p2cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p1cards1[1] + '.png') if game.p1cards1[1] != 'x' else 'empty'
             card3 = pygame.image.load(r'JPEG/' + game.p1cards1[2] + '.png') if game.p1cards1[2] != 'x' else 'empty'
@@ -155,11 +162,9 @@ def redrawWindow(win, game, p):
                     win.blit(cardsp1[i], (200 * i + 30, 500))
 
             for i in range(len(game.p2cards)):
-                if (i - len(game.p2cards)) > 4:
-                    i = len(game.p2cards) - 4
                 win.blit(pygame.image.load(r'JPEG/Red_back.png'), (200 * i + 30, 30))
 
-        elif p == 1 and len(game.p2cards) != 0:
+        elif p == 1 and len(game.p1cards) + len(game.p2cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p2cards1[0] + '.png') if game.p2cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p2cards1[1] + '.png') if game.p2cards1[1] != 'x' else 'empty'
             card3 = pygame.image.load(r'JPEG/' + game.p2cards1[2] + '.png') if game.p2cards1[2] != 'x' else 'empty'
@@ -171,12 +176,7 @@ def redrawWindow(win, game, p):
                     win.blit(cardsp2[i], (200 * i + 30, 500))
 
             for i in range(len(game.p1cards)):
-                if (i - len(game.p2cards)) > 4:
-                    i = len(game.p2cards) - 4
                 win.blit(pygame.image.load(r'JPEG/Red_back.png'), (200 * i + 30, 30))
-
-        else:
-            networkDown = True
 
     pygame.display.update()
 
@@ -185,8 +185,8 @@ btns = [Button('0', 30, 500, (7, 99, 36)), Button("0", 230, 500, (7, 99, 36)),
         Button("0", 430, 500, (7, 99, 36)), Button("0", 630, 500, (7, 99, 36))]
 
 
-def main():
-    global flag, networkDown
+def main(username):
+    global flag
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -201,6 +201,10 @@ def main():
             run = False
             print("Couldn't get game")
             break
+        #
+        n.send('username,'+username)
+        print(username)
+        #
         if btns[0].text == '0' and len(game.p1cards) >= 4:  # dealfirst kartları dağıtıldığı halde butonlara text atanmadıysa
             for i in range(4):
                 if player == 0:
@@ -262,23 +266,41 @@ def main():
 def menu_screen():
     run = True
     clock = pygame.time.Clock()
+    username = ''
+    textbox = pygame.Rect(540, 330, 140, 50)
+    color = pygame.Color((0, 0, 0))
 
     while run:
         clock.tick(60)
-        win.fill((7, 99, 36))
+
         font = pygame.font.SysFont("comicsans", 60)
-        text = font.render("Click to Play!", 1, (0, 0, 0))
-        win.blit(text, (550, 340))
-        pygame.display.update()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key != pygame.K_BACKSPACE:
+                    if event.key != pygame.K_RETURN:
+                        username += event.unicode
+                    else:
+                        run = False
+                else:
+                    username = username[:-1]
 
-    main()
+        win.fill((7, 99, 36))
+        pygame.draw.rect(win,color,textbox,2)
+
+        text = font.render(username, True, (0, 0, 0))
+        textsurface = font.render(username,True,(255,255,255))
+
+        win.blit(textsurface, (textbox.x+5, textbox.y+5))
+
+        textbox.w = max(textsurface.get_width()+10,150)
+        pygame.display.update()
+
+    main(username)
 
 
 while True:
