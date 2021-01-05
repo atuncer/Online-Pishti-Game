@@ -47,8 +47,8 @@ def redrawWindow(win, game, p):
 
     if not (game.connected()):
         font = pygame.font.SysFont("comicsans", 80)
-        text = font.render("Waiting for Player...", True, True)
-        win.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
+        text = font.render("Waiting for Player...", True, (255, 255, 255))
+        win.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2), )
     else:
         for i in range(len(btns)):
             btns[i].width = 173
@@ -60,47 +60,57 @@ def redrawWindow(win, game, p):
         font = pygame.font.SysFont("comicsans", 70)
 
         if p == 0:
-            win.blit(pygame.font.SysFont("comicsans", 40).render(p0name, 1, (0, 0, 0)), (450, 780))
-            win.blit(pygame.font.SysFont("comicsans", 40).render(p1name, 1, (0, 0, 0)), (450, 0))
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 330))
+            win.blit(pygame.font.SysFont("comicsans", 50).render("Vs.", 1, (255, 255, 255)), (30, 380))
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p1name, 1, (255, 255, 255)), (30, 430))
         else:
-            win.blit(pygame.font.SysFont("comicsans", 40).render(p0name, 1, (0, 0, 0)), (450, 0))
-            win.blit(pygame.font.SysFont("comicsans", 40).render(p1name, 1, (0, 0, 0)), (450, 780))
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 430))
+            win.blit(pygame.font.SysFont("comicsans", 50).render("Vs.", 1, (255, 255, 255)), (30, 380))
+            win.blit(pygame.font.SysFont("comicsans", 50).render(p1name, 1, (255, 255, 255)), (30, 330))
 
         if game.p1Turn and p == 0:
-            text1 = font.render("Your Turn", 1, (0, 0, 0))
+            text1 = font.render("Your Turn", 1, (255, 255, 255))
         elif game.p2Turn:
-            text1 = font.render("Opponent's Turn", 1, (0, 0, 0))
+            text1 = font.render("Opponent's Turn", 1, (255, 255, 255))
 
         if game.p2Turn and p == 1:
-            text2 = font.render("Your Turn", 1, (0, 0, 0))
+            text2 = font.render("Your Turn", 1, (255, 255, 255))
         elif game.p1Turn:
-            text2 = font.render("Opponent's Turn", 1, (0, 0, 0))
+            text2 = font.render("Opponent's Turn", 1, (255, 255, 255))
 
         if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 0:
 
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (0, 0, 0)), (450, 700))
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (0, 0, 0)), (450, 100))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (255, 255, 255)),
+                     (450, 700))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), 1, (255, 255, 255)),
+                     (450, 100))
 
             if game.calculator2() < game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (0, 0, 0), (255, 255, 255)),
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
                          (350, 400))
             elif game.calculator1() == game.calculator2():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0), (128, 128, 128)), (430, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
+                         (430, 400))
             else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0), (255, 0, 0)), (350, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
+                         (350, 400))
 
         elif (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 1:
 
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (0, 0, 0)), (450, 100))
-            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), True, (0, 0, 0)), (450, 700))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (255, 255, 255)),
+                     (450, 100))
+            win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator2()), True, (255, 255, 255)),
+                     (450, 700))
 
             if game.calculator2() > game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (0, 0, 0), (255, 255, 255)),
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU WIN", 1, (255, 255, 255), (128, 128, 128)),
                          (350, 400))
             elif game.calculator2() == game.calculator1():
-                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (0, 0, 0), (128, 128, 128)), (430, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("TIE", 1, (255, 255, 255), (128, 128, 128)),
+                         (430, 400))
             else:
-                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (0, 0, 0), (255, 0, 0)), (350, 400))
+                win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
+                         (350, 400))
 
         elif p == 1:
             win.blit(text2, (900, 680))
@@ -201,11 +211,11 @@ def main(username):
             run = False
             print("Couldn't get game")
             break
-        #
-        n.send('username,'+username)
-        print(username)
-        #
-        if btns[0].text == '0' and len(game.p1cards) >= 4:  # dealfirst kartları dağıtıldığı halde butonlara text atanmadıysa
+
+        n.send('username,' + username)
+
+        if btns[0].text == '0' and len(
+                game.p1cards) >= 4:  # dealfirst kartları dağıtıldığı halde butonlara text atanmadıysa
             for i in range(4):
                 if player == 0:
                     btns[i].text = game.p1cards[i]
@@ -220,7 +230,8 @@ def main(username):
         elif game.p1cards == [] and game.p2cards == []:  # ilk turda dağıtmak için
             n.send('dealfirst')
 
-        if game.dealt and btns[0].height == 0 and btns[1].height == 0:  # her tur sonu kartlar dağıtıldığı halde butonlara text atanmadıysa
+        if game.dealt and btns[0].height == 0 and btns[
+            1].height == 0:  # her tur sonu kartlar dağıtıldığı halde butonlara text atanmadıysa
             for i in range(4):
                 if player == 0:
                     btns[i].height = 100
@@ -243,22 +254,16 @@ def main(username):
                         if player == 0:
                             if game.p1Turn:
                                 n.send(btns[i].text)
-                                print(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
-                                    print(game.p1cards)
-                                    print(game.p2cards)
 
                         else:
                             if game.p2Turn:
                                 n.send(btns[i].text)
-                                print(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
-                                    print(game.p1cards)
-                                    print(game.p2cards)
 
         redrawWindow(win, game, player)
 
@@ -268,13 +273,12 @@ def menu_screen():
     clock = pygame.time.Clock()
     username = ''
     textbox = pygame.Rect(540, 330, 140, 50)
-    color = pygame.Color((0, 0, 0))
+    color = pygame.Color((255, 255, 255))
 
     while run:
         clock.tick(60)
 
         font = pygame.font.SysFont("comicsans", 60)
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -283,21 +287,23 @@ def menu_screen():
             if event.type == pygame.KEYDOWN:
                 if event.key != pygame.K_BACKSPACE:
                     if event.key != pygame.K_RETURN:
-                        username += event.unicode
+                        if event.key != pygame.K_COMMA:
+                            username += event.unicode
                     else:
                         run = False
                 else:
                     username = username[:-1]
 
         win.fill((7, 99, 36))
-        pygame.draw.rect(win,color,textbox,2)
+        pygame.draw.rect(win, color, textbox, 2)
 
-        text = font.render(username, True, (0, 0, 0))
-        textsurface = font.render(username,True,(255,255,255))
+        text = font.render(username, True, (255, 255, 255))
+        textsurface = font.render(username, True, (255, 255, 255))
 
-        win.blit(textsurface, (textbox.x+5, textbox.y+5))
+        win.blit(textsurface, (textbox.x + 5, textbox.y + 5))
+        win.blit(pygame.font.SysFont("comicsans", 40).render("Enter username: ", True, (255, 255, 255)), (540, 300))
 
-        textbox.w = max(textsurface.get_width()+10,150)
+        textbox.w = max(textsurface.get_width() + 10, 220)
         pygame.display.update()
 
     main(username)
