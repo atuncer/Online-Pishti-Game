@@ -6,6 +6,7 @@ import random
 # sinek d
 # 1, 10 yerine geçecek
 
+
 def compare(card1, card2, length):
     if card1[0] == card2[0] or card1[0] == 'J':
         if length == 2:
@@ -116,7 +117,6 @@ class Game:
             self.p1Points += 3
         return self.p1Points
 
-
     def calculator2(self):
         for x in self.p2Deadcards:
             if x == '2d':
@@ -135,10 +135,8 @@ class Game:
         elif p == 1:
             self.p2username = name
 
-
     def getUserNames(self):
         return self.p1username, self.p2username
-
 
     def rematch(self,p):
         if p == 0:
@@ -170,3 +168,6 @@ class Game:
             self.p1rematch = False
             self.p2rematch = False
             self.deal_cards_first()
+
+    def getrematchwanters(self):
+        return self.p1rematch, self.p2rematch

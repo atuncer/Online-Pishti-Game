@@ -81,6 +81,23 @@ def redrawWindow(win, game, p):
         elif game.p1Turn:
             text2 = font.render("Opponent's Turn", 1, (255, 255, 255))
 
+        p1rematch, p2rematch = game.getrematchwanters()
+
+        if p == 0:
+            if p1rematch:
+                win.blit(pygame.font.SysFont("comicsans", 40).render("Rematch request sent", 1, (255, 255, 255)),
+                         (830, 680))
+            elif p2rematch:
+                win.blit(pygame.font.SysFont("comicsans", 40).render(p1name + " wants to rematch", 1, (255, 255, 255)),
+                         (830, 680))
+        elif p == 1:
+            if p2rematch:
+                win.blit(pygame.font.SysFont("comicsans", 40).render("Rematch request sent", 1, (255, 255, 255)),
+                         (830, 680))
+            elif p1rematch:
+                win.blit(pygame.font.SysFont("comicsans", 40).render(p0name + " wants to rematch", 1, (255, 255, 255)),
+                         (830, 680))
+
         if (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 0:
 
             win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), 1, (255, 255, 255)),
@@ -172,6 +189,8 @@ def redrawWindow(win, game, p):
                     card4 = pygame.image.load(r'JPEG/' + game.pishticard + '.png')
                     win.blit(card4, (1000, 30))
                 win.blit(pygame.image.load('JPEG/pishti.png'), (400, 320))
+
+
 
         if p == 0 and len(game.p1cards) + len(game.p2cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
@@ -268,8 +287,9 @@ def main(usrname):
 
                             if btns[i].text == 'rematch':
                                 n.send(btns[i].text)
+
                             elif game.p1Turn:
-                                n.send(btns[i].text)  # rematch
+                                n.send(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
