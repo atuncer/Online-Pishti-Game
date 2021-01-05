@@ -11,10 +11,11 @@ pygame.display.set_caption("Client")
 time = None
 done = False
 flag = False
+username = ''
 
 
 class Button:
-    def __init__(self, text, x, y, color):
+    def __init__(self, text, x, y, color,clickable = True):
         self.text = text
         self.x = x
         self.x = x
@@ -22,6 +23,7 @@ class Button:
         self.color = color
         self.width = 150
         self.height = 100
+        self.clickable = clickable
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
@@ -31,12 +33,13 @@ class Button:
                         self.y + round(self.height / 2) - round(text.get_height() / 2)))
 
     def click(self, pos):
-        x1 = pos[0]
-        y1 = pos[1]
-        if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
-            return True
-        else:
-            return False
+        if self.clickable:
+            x1 = pos[0]
+            y1 = pos[1]
+            if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
+                return True
+            else:
+                return False
 
 
 def redrawWindow(win, game, p):
@@ -95,6 +98,9 @@ def redrawWindow(win, game, p):
                 win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
                          (350, 400))
 
+            btns[-1].text = 'rematch'
+            btns[-1].clickable = True
+
         elif (len(game.leftCards) + len(game.p1cards) + len(game.p2cards)) == 0 and p == 1:
 
             win.blit(pygame.font.SysFont("comicsans", 80).render(str(game.calculator1()), True, (255, 255, 255)),
@@ -112,10 +118,17 @@ def redrawWindow(win, game, p):
                 win.blit(pygame.font.SysFont("comicsans", 80).render("YOU LOSE", 1, (255, 255, 255), (255, 0, 0)),
                          (350, 400))
 
+            btns[-1].clickable = True
+            btns[-1].text = 'rematch'
+
         elif p == 1:
             win.blit(text2, (900, 680))
+            btns[-1].clickable = False
+            btns[-1].text = ''
         else:
             win.blit(text1, (900, 680))
+            btns[-1].clickable = False
+            btns[-1].text = ''
 
         if len(game.middleCards) > 0:
             done = False
@@ -192,10 +205,10 @@ def redrawWindow(win, game, p):
 
 
 btns = [Button('0', 30, 500, (7, 99, 36)), Button("0", 230, 500, (7, 99, 36)),
-        Button("0", 430, 500, (7, 99, 36)), Button("0", 630, 500, (7, 99, 36))]
+        Button("0", 430, 500, (7, 99, 36)), Button("0", 630, 500, (7, 99, 36)), Button("", 830, 500, (7, 99, 36),False)]
 
 
-def main(username):
+def main(usrname):
     global flag
     run = True
     clock = pygame.time.Clock()
@@ -212,7 +225,7 @@ def main(username):
             print("Couldn't get game")
             break
 
-        n.send('username,' + username)
+        n.send('username,' + usrname)
 
         if btns[0].text == '0' and len(
                 game.p1cards) >= 4:  # dealfirst kartları dağıtıldığı halde butonlara text atanmadıysa
@@ -252,14 +265,20 @@ def main(username):
                 for i in range(len(btns)):
                     if btns[i].click(pos) and game.connected():
                         if player == 0:
-                            if game.p1Turn:
+
+                            if btns[i].text == 'rematch':
                                 n.send(btns[i].text)
+                            elif game.p1Turn:
+                                n.send(btns[i].text)  # rematch
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
 
+
                         else:
-                            if game.p2Turn:
+                            if btns[i].text == 'rematch':
+                                n.send(btns[i].text)
+                            elif game.p2Turn:
                                 n.send(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
@@ -269,11 +288,12 @@ def main(username):
 
 
 def menu_screen():
+    global username
     run = True
     clock = pygame.time.Clock()
-    username = ''
     textbox = pygame.Rect(540, 330, 140, 50)
     color = pygame.Color((255, 255, 255))
+    btn = Button('Go', 570, 500, (0, 0, 0))
 
     while run:
         clock.tick(60)
@@ -293,6 +313,11 @@ def menu_screen():
                         run = False
                 else:
                     username = username[:-1]
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if btn.click(pos):
+                    run = False
+
 
         win.fill((7, 99, 36))
         pygame.draw.rect(win, color, textbox, 2)
@@ -304,6 +329,10 @@ def menu_screen():
         win.blit(pygame.font.SysFont("comicsans", 40).render("Enter username: ", True, (255, 255, 255)), (540, 300))
 
         textbox.w = max(textsurface.get_width() + 10, 220)
+        btn.draw(win)
+
+
+
         pygame.display.update()
 
     main(username)
