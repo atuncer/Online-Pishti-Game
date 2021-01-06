@@ -13,6 +13,7 @@ done = False
 flag = False
 username = ''
 rclicked = False
+gothscore = False
 
 
 class Button:
@@ -153,19 +154,20 @@ def redrawWindow(win, game, p):
             btns[-1].wantshadow = True
 
             h_scores = game.gethighscores()
-            win.blit(pygame.font.SysFont("comicsans", 60).render("Leaderbords", 1, (255, 255, 255)), (905, 140))
-            pygame.draw.line(win, (255, 255, 255), (1070, 190), (1070, 440), 4)
-            pygame.draw.line(win, (255, 255, 255), (1158, 190), (1158, 440), 4)
-            pygame.draw.line(win, (255, 255, 255), (911, 190),  (911, 440), 4)
+            if len(h_scores) != 0:
+                win.blit(pygame.font.SysFont("comicsans", 60).render("Leaderboard", 1, (255, 255, 255)), (905, 140))
+                pygame.draw.line(win, (255, 255, 255), (1070, 190), (1070, 190 + 50*len(h_scores)), 4)
+                pygame.draw.line(win, (255, 255, 255), (1158, 190), (1158, 190 + 50*len(h_scores)), 4)
+                pygame.draw.line(win, (255, 255, 255), (911, 190),  (911, 190 + 50*len(h_scores)), 4)
 
-            for i in range(len(h_scores)):
-                hs = str(h_scores[i]).split(',')
-                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[0][2:-1], True, (255, 255, 255)),
-                         (920, 200 + i * 50))
-                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[1][:-1], True, (255, 255, 255)),
-                         (1080, 200 + i * 50))
-                pygame.draw.line(win, (255, 255, 255), (910, 190 + i * 50), (1160, 190 + i * 50), 4)
-                pygame.draw.line(win, (255, 255, 255), (910, 240 + i * 50), (1160, 240 + i * 50), 4)
+                for i in range(len(h_scores)):
+                    hs = str(h_scores[i]).split(',')
+                    win.blit(pygame.font.SysFont("comicsans", 40).render(hs[0][2:min(10, len(hs[0])-1)], True, (255, 255, 255)),
+                             (920, 200 + i * 50))
+                    win.blit(pygame.font.SysFont("comicsans", 40).render(hs[1][:-1], True, (255, 255, 255)),
+                             (1080, 200 + i * 50))
+                    pygame.draw.line(win, (255, 255, 255), (910, 190 + i * 50), (1160, 190 + i * 50), 4)
+                    pygame.draw.line(win, (255, 255, 255), (910, 240 + i * 50), (1160, 240 + i * 50), 4)
 
         elif p == 1:
             win.blit(text2, (900, 680))
@@ -259,7 +261,7 @@ btns = [Button('0', 30, 500, (7, 99, 36)), Button("0", 230, 500, (7, 99, 36)),
 
 
 def main(usrname):
-    global flag, rclicked
+    global flag, rclicked, gothscore
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -291,7 +293,13 @@ def main(usrname):
                 n.send('deal')
 
         elif game.p1cards == [] and game.p2cards == []:  # ilk turda dağıtmak için
+            gothscore = False
             n.send('dealfirst')
+
+
+        if len(game.p1cards) + len(game.p2cards) + len(game.leftCards) == 0 and not gothscore:
+            gothscore = True
+            n.send('hscores')
 
         if game.dealt and btns[0].height == 0 and btns[
             1].height == 0:  # her tur sonu kartlar dağıtıldığı halde butonlara text atanmadıysa

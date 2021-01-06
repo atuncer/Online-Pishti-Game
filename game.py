@@ -47,6 +47,7 @@ class Game:
         self.p2username = ''
         self.p1rematch = False
         self.p2rematch = False
+        self.highscores = []
 
     def deal_cards_first(self):
         for i in range(4):
@@ -139,7 +140,7 @@ class Game:
     def getUserNames(self):
         return self.p1username, self.p2username
 
-    def rematch(self,p):
+    def rematch(self, p):
         if p == 0:
             self.p1rematch = True
 
@@ -168,6 +169,7 @@ class Game:
             self.ready = True  # deal() sonunda true, card_played() sonunda false oluyor
             self.p1rematch = False
             self.p2rematch = False
+            self.highscores = []
             self.deal_cards_first()
 
     def getrematchwanters(self):
@@ -176,12 +178,8 @@ class Game:
     def getwinner(self):
         return self.calculator1() > self.calculator2()
 
+    def sethighscores(self, arr):
+        self.highscores = arr
+
     def gethighscores(self):
-        sqlconn = sqlite3.connect('db1.db')
-        c = sqlconn.cursor()
-
-        c.execute("SELECT * FROM USERS ORDER BY points DESC")
-
-        arr = c.fetchall()
-
-        return arr[:min(5, len(arr))]
+        return self.highscores

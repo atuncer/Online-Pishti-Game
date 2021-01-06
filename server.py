@@ -70,6 +70,19 @@ def threaded_client(conn, p, gameId):
                         game.card_played(p, data)
                     elif data.split(',')[0] == 'username':
                         game.setUserName(p, data.split(',')[1])
+                    elif data == 'hscores':
+
+                        try:
+                            sqlconn = sqlite3.connect('db1.db')
+                            c = sqlconn.cursor()
+                            c.execute("SELECT * FROM USERS ORDER BY points DESC")
+                            arr = c.fetchall()
+                            sqlconn.close()
+                            game.sethighscores(arr[:min(5, len(arr))])
+
+                        except sqlite3.Error as ex:
+                            print("An error occurred:", ex.args[0])
+
                     elif data == 'rematch':
                         if p == 0: p0rematch = True
                         else: p1rematch = True
@@ -79,6 +92,7 @@ def threaded_client(conn, p, gameId):
                         if p0rematch and p1rematch:
                             flag = True
                             isfirstround = True
+
 
                     conn.sendall(pickle.dumps(game))
 
