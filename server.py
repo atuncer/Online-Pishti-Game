@@ -47,7 +47,6 @@ def threaded_client(conn, p, gameId):
                             sqlconn = sqlite3.connect('db1.db')
                             c = sqlconn.cursor()
 
-
                             c.execute("SELECT COUNT(*) FROM USERS WHERE username = '{usr}'".format(usr=game.p1username if game.getwinner() else game.p2username))
                             if str(c.fetchone())[1] != '1':
                                 c.execute(
@@ -55,7 +54,6 @@ def threaded_client(conn, p, gameId):
                             else:
                                 c.execute(
                                     "UPDATE USERS SET points = points + {score} WHERE username = '{usr}'".format(score="1", usr=game.p1username if game.getwinner() else game.p2username))
-
 
                             sqlconn.commit()
                             sqlconn.close()

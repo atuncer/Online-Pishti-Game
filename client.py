@@ -12,24 +12,35 @@ time = None
 done = False
 flag = False
 username = ''
+rclicked = False
 
 
 class Button:
-    def __init__(self, text, x, y, color,clickable = True):
+    def __init__(self, text, x, y, color, heightt=100, clickable=True, line=0, shadowheight=5, shadowwidth=5, wantshadow=False):
         self.text = text
         self.x = x
         self.x = x
         self.y = y
         self.color = color
         self.width = 150
-        self.height = 100
+        self.height = heightt
+        self.line = line
         self.clickable = clickable
+        self.shadowheight = shadowheight
+        self.shadowheight = shadowheight
+        self.shadowwidth = shadowwidth
+        self.wantshadow = wantshadow
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
+        shadowcolor = [max(self.color[0]-100, 0), max(self.color[1]-100, 0), max(self.color[2]-100, 0)]
+        if self.wantshadow:
+            pygame.draw.rect(win, shadowcolor, (self.x, self.y+self.height, self.width, self.shadowheight))  # alttaki
+            pygame.draw.rect(win, shadowcolor, (self.x - self.shadowwidth, self.y + self.shadowheight, self.shadowwidth, self.height))  # yandaki
+            pygame.draw.polygon(win, shadowcolor, ((self.x-self.shadowwidth, self.y+self.shadowheight), (self.x, self.y), (self.x+4+self.width, self.y+self.height), (self.x+self.width, self.y+self.shadowheight-1+self.height)))
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width+5, self.height), self.line)
         font = pygame.font.SysFont("comicsans", 60)
         text = font.render(self.text, 1, (255, 255, 255))
-        win.blit(text, (self.x + round(self.width / 2) - round(text.get_width() / 2),
+        win.blit(text, (self.x+5 + round(self.width / 2) - round(text.get_width() / 2),
                         self.y + round(self.height / 2) - round(text.get_height() / 2)))
 
     def click(self, pos):
@@ -56,11 +67,15 @@ def redrawWindow(win, game, p):
         for i in range(len(btns)):
             btns[i].width = 173
             if btns[i].height != 0:
-                btns[i].height = 264
+                if i != len(btns)-1:
+                    btns[i].height = 264
+
             btns[i].draw(win)
 
         p0name, p1name = game.getUserNames()
         font = pygame.font.SysFont("comicsans", 70)
+
+
 
         if p == 0:
             win.blit(pygame.font.SysFont("comicsans", 50).render(p0name, 1, (255, 255, 255)), (30, 430))
@@ -134,21 +149,36 @@ def redrawWindow(win, game, p):
 
             btns[-1].text = 'rematch'
             btns[-1].clickable = True
+            btns[-1].color = (110, 100, 255)
+            btns[-1].wantshadow = True
 
             h_scores = game.gethighscores()
+            win.blit(pygame.font.SysFont("comicsans", 60).render("Leaderbords", 1, (255, 255, 255)), (905, 140))
+            pygame.draw.line(win, (255, 255, 255), (1070, 190), (1070, 440), 4)
+            pygame.draw.line(win, (255, 255, 255), (1158, 190), (1158, 440), 4)
+            pygame.draw.line(win, (255, 255, 255), (911, 190),  (911, 440), 4)
 
-            for i in range (len(h_scores)):
+            for i in range(len(h_scores)):
                 hs = str(h_scores[i]).split(',')
-                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[0][2:-1] + hs[1][:-1], True, (255, 255, 255)), (920, 100+i*50))
+                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[0][2:-1], True, (255, 255, 255)),
+                         (920, 200 + i * 50))
+                win.blit(pygame.font.SysFont("comicsans", 40).render(hs[1][:-1], True, (255, 255, 255)),
+                         (1080, 200 + i * 50))
+                pygame.draw.line(win, (255, 255, 255), (910, 190 + i * 50), (1160, 190 + i * 50), 4)
+                pygame.draw.line(win, (255, 255, 255), (910, 240 + i * 50), (1160, 240 + i * 50), 4)
 
         elif p == 1:
             win.blit(text2, (900, 680))
             btns[-1].clickable = False
             btns[-1].text = ''
+            btns[-1].color = (7, 99, 36)
+            btns[-1].wantshadow = False
         else:
             win.blit(text1, (900, 680))
             btns[-1].clickable = False
             btns[-1].text = ''
+            btns[-1].color = (7, 99, 36)
+            btns[-1].wantshadow = False
 
         if len(game.middleCards) > 0:
             done = False
@@ -193,8 +223,6 @@ def redrawWindow(win, game, p):
                     win.blit(card4, (1000, 30))
                 win.blit(pygame.image.load('JPEG/pishti.png'), (400, 320))
 
-
-
         if p == 0 and len(game.p1cards) + len(game.p2cards) != 0:
             card1 = pygame.image.load(r'JPEG/' + game.p1cards1[0] + '.png') if game.p1cards1[0] != 'x' else 'empty'
             card2 = pygame.image.load(r'JPEG/' + game.p1cards1[1] + '.png') if game.p1cards1[1] != 'x' else 'empty'
@@ -227,11 +255,11 @@ def redrawWindow(win, game, p):
 
 
 btns = [Button('0', 30, 500, (7, 99, 36)), Button("0", 230, 500, (7, 99, 36)),
-        Button("0", 430, 500, (7, 99, 36)), Button("0", 630, 500, (7, 99, 36)), Button("", 830, 500, (7, 99, 36),False)]
+        Button("0", 430, 500, (7, 99, 36)), Button("0", 630, 500, (7, 99, 36)), Button("rematch", 830, 580, (7, 99, 36), 45, False)]
 
 
 def main(usrname):
-    global flag
+    global flag, rclicked
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -289,7 +317,12 @@ def main(usrname):
                         if player == 0:
 
                             if btns[i].text == 'rematch':
-                                n.send(btns[i].text)
+                                btns[i].y = btns[i].y + 5
+                                btns[i].x = btns[i].x - 5
+                                btns[i].shadowheight = 1
+                                btns[i].shadowwidth = 1
+                                rclicked = True
+
 
                             elif game.p1Turn:
                                 n.send(btns[i].text)
@@ -297,15 +330,30 @@ def main(usrname):
                                     btns[i].text = ''
                                     btns[i].height = 0
 
-
                         else:
                             if btns[i].text == 'rematch':
-                                n.send(btns[i].text)
+                                btns[i].y = btns[i].y + 5
+                                btns[i].x = btns[i].x - 5
+                                btns[i].shadowheight = 1
+                                btns[i].shadowwidth = 1
+                                rclicked = True
+
                             elif game.p2Turn:
                                 n.send(btns[i].text)
                                 if len(btns[i].text) == 2:
                                     btns[i].text = ''
                                     btns[i].height = 0
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                if rclicked:
+                    rclicked = False
+                    btns[i].y = btns[i].y - 5
+                    btns[i].x = btns[i].x + 5
+                    btns[i].shadowheight = 5
+                    btns[i].shadowwidth = 5
+                    if btns[i].click(pos):
+                        n.send(btns[i].text)
 
         redrawWindow(win, game, player)
 
@@ -316,7 +364,8 @@ def menu_screen():
     clock = pygame.time.Clock()
     textbox = pygame.Rect(540, 330, 140, 50)
     color = pygame.Color((255, 255, 255))
-    btn = Button('Go', 570, 500, (0, 0, 0))
+    btn = Button('Go', 570, 500, (100,100,100),wantshadow=True)
+    clicked = False
 
     while run:
         clock.tick(60)
@@ -339,8 +388,21 @@ def menu_screen():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 if btn.click(pos):
-                    run = False
-
+                    btn.y = btn.y+5
+                    btn.x = btn.x-5
+                    btn.shadowheight = 1
+                    btn.shadowwidth = 1
+                    clicked = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                if clicked:
+                    btn.y = btn.y - 5
+                    btn.x = btn.x + 5
+                    btn.shadowheight = 5
+                    btn.shadowwidth = 5
+                    clicked = False
+                    if btn.click(pos):
+                        run = False
 
         win.fill((7, 99, 36))
         pygame.draw.rect(win, color, textbox, 2)
