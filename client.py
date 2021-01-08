@@ -290,10 +290,11 @@ def main(usrname):
 
         if game.p1cards == [] and game.p2cards == [] and btns[1].height == 0:  # her tur bittiğinde
             if len(game.leftCards) > 0:
+                gothscore = False
                 n.send('deal')
 
         elif game.p1cards == [] and game.p2cards == []:  # ilk turda dağıtmak için
-            gothscore = False
+
             n.send('dealfirst')
 
 
