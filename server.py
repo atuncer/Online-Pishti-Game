@@ -7,7 +7,7 @@ from game import Game
 server = "localhost"
 port = 8080
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # ipv4, port
 
 try:
     s.bind((server, port))
@@ -33,7 +33,7 @@ def threaded_client(conn, p, gameId):
     reply = ""
     while True:
         try:
-            data = conn.recv(4096).decode()
+            data = conn.recv(4096).decode()  # get
 
             if gameId in games:
                 game = games[gameId]
@@ -116,6 +116,11 @@ while True:
     print("Connected to:", addr)
 
     idCount += 1
+    if (idCount == 30):
+        print("Server Full")
+        break
+
+
     p = 0
     gameId = (idCount - 1)//2
     if idCount % 2 == 1:
